@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-white text-gray-950 font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+  
+  h1 {
+    @apply text-4xl lg:text-6xl;
+  }
+  
+  h2 {
+    @apply text-3xl lg:text-5xl;
+  }
+  
+  h3 {
+    @apply text-2xl lg:text-4xl;
+  }
+  
+  button {
+    @apply transition-colors duration-200;
+  }
+  
+  a {
+    @apply transition-colors duration-200;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-gray-800 transition-colors duration-200;
+  }
+  
+  .btn-secondary {
+    @apply border border-gray-300 text-black px-6 py-3 rounded-full font-medium hover:bg-gray-50 transition-colors duration-200;
+  }
+  
+  .container-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+  
+  .hero-text {
+    @apply text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight;
+  }
+  
+  .section-padding {
+    @apply py-16 lg:py-24;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
