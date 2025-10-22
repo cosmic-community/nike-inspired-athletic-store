@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Product, Category, SearchFilters } from '@/types'
 import ProductGrid from '@/components/ProductGrid'
-import SearchFilters as SearchFiltersComponent from '@/components/SearchFilters'
+import SearchFiltersComponent from '@/components/SearchFilters'
 
 interface SearchInterfaceProps {
   categories: Category[]
