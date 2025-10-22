@@ -44,10 +44,24 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
     notFound()
   }
 
-  // Filter products by collection
-  const collectionProducts = allProducts.filter((product: Product) => 
-    product.metadata?.collection?.id === collection.id
-  )
+  // Filter products by collection - handle both string ID and object reference
+  const collectionProducts = allProducts.filter((product: Product) => {
+    if (!product.metadata?.collection) {
+      return false
+    }
+    
+    // Handle case where collection is an object with ID
+    if (typeof product.metadata.collection === 'object' && 'id' in product.metadata.collection) {
+      return product.metadata.collection.id === collection.id
+    }
+    
+    // Handle case where collection is just an ID string
+    if (typeof product.metadata.collection === 'string') {
+      return product.metadata.collection === collection.id
+    }
+    
+    return false
+  })
 
   return (
     <div className="min-h-screen bg-white">
