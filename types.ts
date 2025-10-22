@@ -96,6 +96,28 @@ export interface ContentPage extends CosmicObject {
   };
 }
 
+// Search interfaces
+export interface SearchFilters {
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  inStock?: boolean;
+  featured?: boolean;
+  size?: string;
+  sortBy?: 'newest' | 'price-low' | 'price-high' | 'name';
+}
+
+export interface SearchParams {
+  q?: string;
+  category?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  inStock?: string;
+  featured?: string;
+  size?: string;
+  sortBy?: string;
+}
+
 // API response types
 export interface CosmicResponse<T> {
   objects: T[];

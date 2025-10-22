@@ -1,5 +1,5 @@
 import { createBucketClient } from '@cosmicjs/sdk'
-import { Product, Category, Collection, HomepageSection, ContentPage, CosmicResponse } from '@/types'
+import { Product, Category, Collection, HomepageSection, ContentPage, CosmicResponse, SearchFilters } from '@/types'
 
 export const cosmic = createBucketClient({
   bucketSlug: process.env.COSMIC_BUCKET_SLUG as string,
@@ -71,6 +71,101 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
       return null;
     }
     throw new Error('Failed to fetch product');
+  }
+}
+
+// Search products
+export async function searchProducts(query?: string, filters?: SearchFilters): Promise<Product[]> {
+  try {
+    const response = await cosmic.objects
+      .find({ type: 'products' })
+      .props(['id', 'title', 'slug', 'metadata'])
+      .depth(1);
+    
+    let products = response.objects as Product[];
+    
+    // Filter by search query
+    if (query && query.trim()) {
+      const searchTerm = query.toLowerCase().trim();
+      products = products.filter(product => {
+        const name = (product.metadata?.name || product.title).toLowerCase();
+        const description = (product.metadata?.description || '').toLowerCase();
+        const color = (product.metadata?.color || '').toLowerCase();
+        const categoryName = (product.metadata?.category?.metadata?.name || product.metadata?.category?.title || '').toLowerCase();
+        
+        return name.includes(searchTerm) || 
+               description.includes(searchTerm) || 
+               color.includes(searchTerm) ||
+               categoryName.includes(searchTerm);
+      });
+    }
+    
+    // Apply filters
+    if (filters) {
+      // Filter by category
+      if (filters.category && filters.category !== 'all') {
+        products = products.filter(product => 
+          product.metadata?.category?.slug === filters.category
+        );
+      }
+      
+      // Filter by price range
+      if (filters.minPrice !== undefined) {
+        products = products.filter(product => 
+          (product.metadata?.price || 0) >= filters.minPrice!
+        );
+      }
+      
+      if (filters.maxPrice !== undefined) {
+        products = products.filter(product => 
+          (product.metadata?.price || 0) <= filters.maxPrice!
+        );
+      }
+      
+      // Filter by in stock
+      if (filters.inStock) {
+        products = products.filter(product => 
+          product.metadata?.in_stock === true
+        );
+      }
+      
+      // Filter by featured
+      if (filters.featured) {
+        products = products.filter(product => 
+          product.metadata?.featured === true
+        );
+      }
+      
+      // Filter by size
+      if (filters.size) {
+        products = products.filter(product => 
+          product.metadata?.sizes?.includes(filters.size!) || false
+        );
+      }
+    }
+    
+    // Sort products
+    const sortBy = filters?.sortBy || 'newest';
+    products.sort((a, b) => {
+      switch (sortBy) {
+        case 'price-low':
+          return (a.metadata?.price || 0) - (b.metadata?.price || 0);
+        case 'price-high':
+          return (b.metadata?.price || 0) - (a.metadata?.price || 0);
+        case 'name':
+          return (a.metadata?.name || a.title).localeCompare(b.metadata?.name || b.title);
+        case 'newest':
+        default:
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }
+    });
+    
+    return products;
+  } catch (error) {
+    if (hasStatus(error) && error.status === 404) {
+      return [];
+    }
+    throw new Error('Failed to search products');
   }
 }
 
