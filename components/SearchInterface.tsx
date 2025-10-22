@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Product, Category, SearchFilters } from '@/types'
 import ProductGrid from '@/components/ProductGrid'
@@ -14,11 +14,14 @@ export default function SearchInterface({ categories }: SearchInterfaceProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [query, setQuery] = useState('')
+  const [debouncedQuery, setDebouncedQuery] = useState('')
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState<SearchFilters>({
     sortBy: 'newest'
   })
+  
+  const debounceRef = useRef<NodeJS.Timeout>()
 
   // Initialize search from URL params
   useEffect(() => {
@@ -32,6 +35,7 @@ export default function SearchInterface({ categories }: SearchInterfaceProps) {
     const sortBy = (searchParams.get('sortBy') || 'newest') as SearchFilters['sortBy']
 
     setQuery(q)
+    setDebouncedQuery(q)
     setFilters({
       category: category === 'all' ? undefined : category,
       minPrice: minPrice ? parseFloat(minPrice) : undefined,
@@ -42,6 +46,23 @@ export default function SearchInterface({ categories }: SearchInterfaceProps) {
       sortBy
     })
   }, [searchParams])
+
+  // Debounce search query
+  useEffect(() => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current)
+    }
+    
+    debounceRef.current = setTimeout(() => {
+      setDebouncedQuery(query)
+    }, 300) // 300ms debounce delay
+
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current)
+      }
+    }
+  }, [query])
 
   // Search products
   const searchProducts = useCallback(async (searchQuery: string, searchFilters: SearchFilters) => {
@@ -74,10 +95,10 @@ export default function SearchInterface({ categories }: SearchInterfaceProps) {
     }
   }, [])
 
-  // Effect to trigger search when query or filters change
+  // Effect to trigger search when debounced query or filters change
   useEffect(() => {
-    searchProducts(query, filters)
-  }, [query, filters, searchProducts])
+    searchProducts(debouncedQuery, filters)
+  }, [debouncedQuery, filters, searchProducts])
 
   const handleQueryChange = (newQuery: string) => {
     setQuery(newQuery)
@@ -89,6 +110,7 @@ export default function SearchInterface({ categories }: SearchInterfaceProps) {
 
   const handleClearAll = () => {
     setQuery('')
+    setDebouncedQuery('')
     setFilters({ sortBy: 'newest' })
   }
 
@@ -143,7 +165,7 @@ export default function SearchInterface({ categories }: SearchInterfaceProps) {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-lg font-semibold text-gray-900">
-                {query ? `Search Results for "${query}"` : 'All Products'}
+                {debouncedQuery ? `Search Results for "${debouncedQuery}"` : 'All Products'}
               </h2>
               <p className="text-sm text-gray-600 mt-1">
                 {loading ? 'Searching...' : `${products.length} products found`}
