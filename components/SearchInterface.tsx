@@ -22,9 +22,12 @@ export default function SearchInterface({ categories }: SearchInterfaceProps) {
   })
   
   const debounceRef = useRef<NodeJS.Timeout>()
+  const isInitializedRef = useRef(false)
 
-  // Initialize search from URL params
+  // Initialize search from URL params only once
   useEffect(() => {
+    if (isInitializedRef.current) return
+    
     const q = searchParams.get('q') || ''
     const category = searchParams.get('category') || 'all'
     const minPrice = searchParams.get('minPrice')
@@ -45,6 +48,8 @@ export default function SearchInterface({ categories }: SearchInterfaceProps) {
       size: size || undefined,
       sortBy
     })
+    
+    isInitializedRef.current = true
   }, [searchParams])
 
   // Debounce search query
@@ -64,7 +69,7 @@ export default function SearchInterface({ categories }: SearchInterfaceProps) {
     }
   }, [query])
 
-  // Search products
+  // Search products - memoized function to prevent infinite loops
   const searchProducts = useCallback(async (searchQuery: string, searchFilters: SearchFilters) => {
     setLoading(true)
     try {
@@ -93,10 +98,11 @@ export default function SearchInterface({ categories }: SearchInterfaceProps) {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, []) // Empty dependency array - function doesn't depend on external values
 
   // Effect to trigger search when debounced query or filters change
   useEffect(() => {
+    if (!isInitializedRef.current) return // Don't search until initialized
     searchProducts(debouncedQuery, filters)
   }, [debouncedQuery, filters, searchProducts])
 

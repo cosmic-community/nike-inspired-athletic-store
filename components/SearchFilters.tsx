@@ -26,6 +26,13 @@ export default function SearchFiltersComponent({ categories, filters, onFiltersC
 
   const sizes = ['6', '6.5', '7', '7.5', '8', '8.5', '9', '9.5', '10', '10.5', '11', '11.5', '12', '12.5', '13']
 
+  // Helper function to check if a price range is selected
+  const isPriceRangeSelected = (range: { min: number; max: number | undefined }) => {
+    return filters.minPrice === range.min && 
+           ((range.max === undefined && filters.maxPrice === undefined) || 
+            (filters.maxPrice === range.max))
+  }
+
   return (
     <div className="space-y-6">
       {/* Category Filter */}
@@ -83,7 +90,7 @@ export default function SearchFiltersComponent({ categories, filters, onFiltersC
               <input
                 type="radio"
                 name="priceRange"
-                checked={filters.minPrice === range.min && filters.maxPrice === range.max}
+                checked={isPriceRangeSelected(range)}
                 onChange={() => {
                   updateFilter('minPrice', range.min)
                   updateFilter('maxPrice', range.max)
