@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import ProductGrid from '@/components/ProductGrid'
 import { Metadata } from 'next'
 import { Product } from '@/types'
+import { generateSEO } from '@/lib/seo'
 
 interface CollectionPageProps {
   params: Promise<{ slug: string }>
@@ -27,10 +28,16 @@ export async function generateMetadata({ params }: CollectionPageProps): Promise
     }
   }
 
-  return {
-    title: `${collection.metadata.name} - Nike Inspired Store`,
-    description: collection.metadata.description || `Explore the ${collection.metadata.name} collection`,
-  }
+  const description = collection.metadata.description 
+    ? collection.metadata.description 
+    : `Explore the ${collection.metadata.name} collection. ${collection.metadata.tagline || ''}`
+
+  return generateSEO({
+    title: collection.metadata.name,
+    description,
+    image: collection.metadata.hero_image?.imgix_url,
+    type: 'website'
+  })
 }
 
 export default async function CollectionPage({ params }: CollectionPageProps) {
