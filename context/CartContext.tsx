@@ -52,7 +52,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (existingItemIndex > -1) {
         // Item already exists, increase quantity
         const updatedItems = [...currentItems]
-        updatedItems[existingItemIndex].quantity += item.quantity
+        const existingItem = updatedItems[existingItemIndex]
+        
+        // Add null check to satisfy TypeScript's noUncheckedIndexedAccess
+        if (existingItem) {
+          existingItem.quantity += item.quantity
+        }
+        
         return updatedItems
       } else {
         // New item, add to cart
