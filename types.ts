@@ -96,6 +96,16 @@ export interface ContentPage extends CosmicObject {
   };
 }
 
+// Cart Item interface
+export interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  size?: string;
+  image: string;
+  quantity: number;
+}
+
 // Search interfaces
 export interface SearchFilters {
   category?: string;
