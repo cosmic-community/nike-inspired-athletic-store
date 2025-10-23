@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Product } from '@/types'
+import { useCart } from '@/context/CartContext'
 
 interface ProductDetailProps {
   product: Product
@@ -10,6 +11,8 @@ interface ProductDetailProps {
 export default function ProductDetail({ product }: ProductDetailProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [selectedSize, setSelectedSize] = useState<string>('')
+  const [showAddedAnimation, setShowAddedAnimation] = useState(false)
+  const { addToCart } = useCart()
   
   const { metadata } = product
 
@@ -19,6 +22,27 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
   const images = metadata.images || []
   const sizes = metadata.sizes || []
+
+  const handleAddToCart = () => {
+    if (sizes.length > 0 && !selectedSize) {
+      return
+    }
+
+    addToCart({
+      id: product.id,
+      name: metadata.name,
+      price: metadata.price,
+      size: selectedSize || undefined,
+      image: images[0]?.imgix_url || '',
+      quantity: 1,
+    })
+
+    // Trigger animation
+    setShowAddedAnimation(true)
+    setTimeout(() => {
+      setShowAddedAnimation(false)
+    }, 2000)
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -108,17 +132,27 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             )}
 
             {/* Add to Cart */}
-            <div className="space-y-4">
+            <div className="space-y-4 relative">
               <button
-                className={`w-full py-4 rounded-full font-semibold text-lg transition-colors ${
+                onClick={handleAddToCart}
+                className={`w-full py-4 rounded-full font-semibold text-lg transition-all ${
                   selectedSize || sizes.length === 0
-                    ? 'bg-black text-white hover:bg-gray-800'
+                    ? 'bg-black text-white hover:bg-gray-800 active:scale-95'
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }`}
                 disabled={sizes.length > 0 && !selectedSize}
               >
                 {sizes.length > 0 && !selectedSize ? 'Select Size' : 'Add to Bag'}
               </button>
+              
+              {/* Added to Cart Animation */}
+              {showAddedAnimation && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="bg-green-500 text-white px-6 py-3 rounded-full font-semibold shadow-lg animate-bounce">
+                    ✓ Added to Bag!
+                  </div>
+                </div>
+              )}
               
               <button className="w-full border border-gray-300 py-4 rounded-full font-semibold text-lg hover:border-black transition-colors">
                 Favourite
