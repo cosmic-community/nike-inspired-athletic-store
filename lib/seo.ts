@@ -17,7 +17,7 @@ export function generateSEO({
 }: SEOProps): Metadata {
   const siteName = 'Nike Inspired Athletic Store'
   const fullTitle = title.includes(siteName) ? title : `${title} - ${siteName}`
-  const defaultImage = 'https://imgix.cosmicjs.com/12010850-aed5-11f0-b3d5-278a061684c4-photo-1608231387042-66d1773070a5-1761089059212.jpg?w=1200&h=630&fit=crop&auto=format,compress'
+  const defaultImage = 'https://imgix.cosmicjs.com/12010850-aed5-11f0-b3d5-278a061684c4-photo-1608231387042-66d1773070a5-1761089059212.jpg?w=1200&h=630&fit=crop&auto=compress'
   const ogImage = image ? `${image}?w=1200&h=630&fit=crop&auto=format,compress` : defaultImage
 
   // OpenGraph only supports 'website' or 'article', not 'product'
