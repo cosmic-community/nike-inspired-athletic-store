@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import ProductGrid from '@/components/ProductGrid'
 import { Metadata } from 'next'
 import { Product } from '@/types'
+import { generateSEO } from '@/lib/seo'
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>
@@ -27,10 +28,16 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
     }
   }
 
-  return {
-    title: `${category.metadata.name} - Nike Inspired Store`,
-    description: category.metadata.description || `Shop ${category.metadata.name} athletic wear and footwear`,
-  }
+  const description = category.metadata.description 
+    ? category.metadata.description 
+    : `Shop ${category.metadata.name} athletic wear and footwear. Discover the latest in ${category.metadata.name.toLowerCase()} sportswear and performance gear.`
+
+  return generateSEO({
+    title: category.metadata.name,
+    description,
+    image: category.metadata.image?.imgix_url,
+    type: 'website'
+  })
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
@@ -57,7 +64,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           {category.metadata?.image && (
             <div className="w-32 h-32 mx-auto mb-8 rounded-full overflow-hidden">
               <img 
-                src={`${category.metadata.image.imgix_url}?w=128&h=128&fit=crop&auto=format,compress`}
+                src={`${category.metadata.image.imgix_url}?w=256&h=256&fit=crop&auto=format,compress`}
                 alt={category.metadata.name}
                 className="w-full h-full object-cover"
                 width={128}

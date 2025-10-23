@@ -3,6 +3,32 @@ import HeroSection from '@/components/HeroSection'
 import ProductGrid from '@/components/ProductGrid'
 import CollectionShowcase from '@/components/CollectionShowcase'
 import { HomepageSection, Product, Collection } from '@/types'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Nike Inspired Athletic Store - Just Do It',
+  description: 'Discover the latest in athletic footwear, apparel, and gear. Shop premium sneakers, Jordan collection, LeBron XXIII, and performance sportswear.',
+  openGraph: {
+    title: 'Nike Inspired Athletic Store - Just Do It',
+    description: 'Discover the latest in athletic footwear, apparel, and gear. Shop premium sneakers, Jordan collection, LeBron XXIII, and performance sportswear.',
+    type: 'website',
+    siteName: 'Nike Inspired Athletic Store',
+    images: [
+      {
+        url: 'https://imgix.cosmicjs.com/12010850-aed5-11f0-b3d5-278a061684c4-photo-1608231387042-66d1773070a5-1761089059212.jpg?w=1200&h=630&fit=crop&auto=format,compress',
+        width: 1200,
+        height: 630,
+        alt: 'Nike Inspired Athletic Store - Featured Products'
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Nike Inspired Athletic Store - Just Do It',
+    description: 'Discover the latest in athletic footwear, apparel, and gear. Shop premium sneakers, Jordan collection, LeBron XXIII, and performance sportswear.',
+    images: ['https://imgix.cosmicjs.com/12010850-aed5-11f0-b3d5-278a061684c4-photo-1608231387042-66d1773070a5-1761089059212.jpg?w=1200&h=630&fit=crop&auto=format,compress']
+  }
+}
 
 export default async function HomePage() {
   const [sections, featuredProducts, featuredCollections] = await Promise.all([
