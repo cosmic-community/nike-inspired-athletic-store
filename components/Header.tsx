@@ -53,7 +53,7 @@ export default async function Header() {
               </svg>
             </button>
 
-            {/* Cart */}
+            {/* Cart - Only render on client side */}
             <CartButton />
 
             {/* Mobile Menu */}

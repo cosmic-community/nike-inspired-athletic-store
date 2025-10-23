@@ -25,9 +25,17 @@ const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
+  const [mounted, setMounted] = useState(false)
+
+  // Mark as mounted to prevent SSR issues
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Load cart from localStorage on mount
   useEffect(() => {
+    if (!mounted) return
+    
     const savedCart = localStorage.getItem('nike-cart')
     if (savedCart) {
       try {
@@ -36,12 +44,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
         console.error('Error loading cart:', error)
       }
     }
-  }, [])
+  }, [mounted])
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
+    if (!mounted) return
     localStorage.setItem('nike-cart', JSON.stringify(items))
-  }, [items])
+  }, [items, mounted])
 
   const addToCart = (item: CartItem) => {
     setItems((currentItems) => {
