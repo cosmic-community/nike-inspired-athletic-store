@@ -37,7 +37,7 @@ The app has been tailored to work with your existing Cosmic content structure an
 
 ## Technologies Used
 
-- **Next.js 15** - React framework with App Router
+- **Next.js 16** - React framework with App Router
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first CSS framework
 - **Cosmic CMS** - Headless CMS for content management
