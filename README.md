@@ -2,7 +2,7 @@
 
 ![Nike Inspired Athletic Store](https://imgix.cosmicjs.com/12010850-aed5-11f0-b3d5-278a061684c4-photo-1608231387042-66d1773070a5-1761089059212.jpg?w=1200&h=300&fit=crop&auto=format,compress)
 
-A complete Nike-inspired e-commerce platform built with Next.js 15 and powered by Cosmic CMS. Features a modern, responsive design with dynamic product catalog, category browsing, and content management.
+A complete Nike-inspired e-commerce platform built with Next.js 16 and powered by Cosmic CMS. Features a modern, responsive design with dynamic product catalog, category browsing, and content management.
 
 ## Features
 
