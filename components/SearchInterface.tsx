@@ -21,7 +21,7 @@ export default function SearchInterface({ categories }: SearchInterfaceProps) {
     sortBy: 'newest'
   })
   
-  const debounceRef = useRef<NodeJS.Timeout>()
+  const debounceRef = useRef<NodeJS.Timeout | undefined>(undefined) // Changed: Added undefined as initial value
   const isInitializedRef = useRef(false)
 
   // Initialize search from URL params only once
